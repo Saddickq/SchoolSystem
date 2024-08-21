@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input {
+    @apply border outline-none rounded-md py-1 px-2 w-64 bg-gray-600 text-gray-100
+}
+
+button {
+    @apply border my-4 py-1 px-3 w-64 rounded-lg hover:opacity-50 text-white focus:outline-offset-2 focus:outline
+}
