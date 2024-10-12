@@ -1,3 +1,6 @@
 export { default as LandingPage } from "./LandingPage"
 export { default as RegisterPage } from "./RegisterPage"
 export { default as LoginPage } from "./LoginPage"
+export { default as Student } from "./Student"
+export { default as Lecturer } from "./Lecturer"
+export { default as Admin } from "./Admin"
