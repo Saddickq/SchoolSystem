@@ -18,16 +18,18 @@ const userSchema = Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is Required"],
+      minlength: [6, "Password must be 6 characters or more long"],
     },
     role: {
       type: String,
-      enum: ["lecturer", "student"],
       required: true,
+      default: "admin",
+      enum: ["admin","lecturer", "student"],
     },
     isActive: {
         type: Boolean,
-        default: false,
+        default: true,
     },
   },
   {
