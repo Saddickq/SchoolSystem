@@ -1,6 +1,3 @@
-// import UserOptions from "../components/UserOptions";
-// import users from "../utils/Users";
-import { useState } from "react";
 import { FaUserTie } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 

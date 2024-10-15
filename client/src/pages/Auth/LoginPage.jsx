@@ -1,12 +1,16 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
+import { userContext } from "../../utils/context";
 
 const LoginPage = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const [redirect, setRedirect] = useState("");
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
+
+  const { setUser } = useContext(userContext);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,14 +30,14 @@ const LoginPage = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("/api/v1/login", {
+      const { data } = await axios.post("/api/v1/login", {
         email: formData.email,
         password: formData.password,
       });
-      setRedirect("/admin-dashboard");
+      setUser(data.user);
+      setRedirect(`/${data.user.role}-dashboard`);
     } catch (error) {
-      console.error(error);
-      setError(error.response.data.error)
+      setError(error.response.data.message);
     }
   };
   if (redirect) {
@@ -41,9 +45,12 @@ const LoginPage = () => {
   }
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-700">
-        <div className="absolute top-20 cursor-pointer" onClick={()=>navigate('/')}>
-            <IoArrowBack className="text-neutral-100 size-8"/>
-        </div>
+      <div
+        className="absolute top-20 cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        <IoArrowBack className="text-neutral-100 size-8" />
+      </div>
       <form
         className="place-self-center border p-10 rounded-md"
         onSubmit={handleLogin}
@@ -56,6 +63,7 @@ const LoginPage = () => {
             value={formData.email}
             onChange={handleChange}
             type="email"
+            className="bg-transparent"
           />
         </div>
         <div className="my-4">
@@ -65,16 +73,16 @@ const LoginPage = () => {
             value={formData.password}
             onChange={handleChange}
             type="password"
+            className="bg-transparent"
           />
         </div>
-        {error && <p className="text-sm text-center text-red-300">{error}</p>}
-        <button type="submit">Login</button>
-        {/* <div className="text-sm text-center text-gray-300">
-          Need an account?{" "}
-          <Link to={"/register"} className="font-semibold cursor-pointer">
-            signup here
-          </Link>
-        </div> */}
+        <button
+          className="focus:outline-none bg-neutral-300 text-neutral-800 font-semibold"
+          type="submit"
+        >
+          Login
+        </button>
+        {error && <p className="text-center text-red-400">{error}</p>}
       </form>
     </div>
   );

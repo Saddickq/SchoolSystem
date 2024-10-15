@@ -5,9 +5,10 @@ import LecturersTable from "../../components/LecturersTable";
 import axios from "axios";
 
 const AdminDashboard = () => {
-  const { user } = useContext(userContext);
+  const { user, setUser } = useContext(userContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({ email: "", role: "student" });
+  const [redirect, setRedirect] = useState();
 
   const students = 10;
   const teachers = 5;
@@ -18,20 +19,47 @@ const AdminDashboard = () => {
   };
 
   const handleAddUser = async () => {
-    // console.log(newUser)
-    const { data } = await axios.post("/api/v1/invite-user", {
-      role: newUser.role,
-      email: newUser.email,
-    });
-    console.log(data.response.message);
-    setIsModalOpen(false);
+    
+    try {
+      const { data } = await axios.post("/api/v1/invite-user", {
+        role: newUser.role,
+        email: newUser.email,
+      });
+      console.log(data.message);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsModalOpen(false);
+    }
   };
 
+  const handleLogout = async () => {
+    try {
+      const { data } = await axios.get("/api/v1/logout");
+      setUser("");
+      setRedirect("/");
+      console.log(data.message);
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
+  };
+
+  if (redirect) {
+    return <Navigate to={redirect} />;
+  }
   return (
     <div className="py-6 px-24 bg-gray-700 min-h-screen">
-      <h2 className="text-3xl text-neutral-100 font-bold mb-6">
-        Welcome {user.firstName} {user.lastName}
-      </h2>
+      <div className="flex m-4 justify-between items-center">
+        <h2 className="text-3xl text-neutral-100 font-bold mb-6">
+          Welcome {user.firstName} {user.lastName}
+        </h2>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white py-1 rounded-md hover:bg-red-600 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-400"
+        >
+          Logout
+        </button>
+      </div>
 
       {/* Tiles */}
       <div className="grid grid-cols-2 gap-8 mb-8">
@@ -61,15 +89,24 @@ const AdminDashboard = () => {
               name="email"
               value={newUser.email}
               onChange={handleInputChange}
-              className="w-full p-2 border bg-transparent rounded mb-4"
+              className="w-full text-neutral-800 p-2 border bg-transparent rounded mb-4"
               placeholder="Enter email"
             />
-            <label className="block mb-2">Role:</label>
+            <label
+              htmlFor="role"
+              className="block text-gray-700 font-semibold mb-2"
+            >
+              Select your Role:
+            </label>
             <select
               name="role"
+              id="role"
               onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-4"
+              className="w-full p-2 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
+              <option value="" disabled selected>
+                Choose a role
+              </option>
               <option value="student">Student</option>
               <option value="lecturer">Lecturer</option>
             </select>

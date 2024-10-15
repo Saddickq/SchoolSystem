@@ -19,17 +19,17 @@ const RegisterPage = () => {
   const handleRgister = async (event) => {
     event.preventDefault();
     try {
-      const { data } = await axios.post("/register-admin", {
+      const { data } = await axios.post("/api/v1/register-admin", {
         name: formData.name,
         email: formData.email,
         password: formData.password,
         firstName: formData.firstName,
         lastName: formData.lastName,
       });
+      console.log(data.message)
       setRedirect("/login");
     } catch (error) {
-      console.error(error.response.data.message);
-      // setError(error.response.data.error)
+      setError(error.response.data.message);
     }
   };
 
@@ -94,11 +94,8 @@ const RegisterPage = () => {
             type="password"
           />
         </div>
-        {error && <p className="text-sm text-center text-red-300">{error}</p>}
         <button type="submit">Register</button>
-        {/* <div className="text-sm text-center text-gray-300">
-                    Aready have an account? <Link to={"/login"} className="font-semibold">signin here</Link>
-                </div> */}
+        {error && <p className="text-sm text-center text-red-400">{error}</p>}
       </form>
     </div>
   );
