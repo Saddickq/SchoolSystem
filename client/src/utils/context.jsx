@@ -13,7 +13,7 @@ export function UserContextProvider({ children }) {
         setUser(data);
       });
     } catch (error) {
-      console.log("Something happened in context.jsx");
+      console.log(error.response.data.message);
     } finally {
       setLoading(false);
     }
